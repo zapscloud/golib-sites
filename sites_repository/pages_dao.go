@@ -6,8 +6,8 @@ import (
 	"github.com/zapscloud/golib-utils/utils"
 )
 
-// PageDao - Card DAO Repository
-type PageDao interface {
+// PagesDao - Card DAO Repository
+type PagesDao interface {
 	// InitilaizeDao
 	InitializeDao(client utils.Map, businessId string)
 	// Create - Create collection
@@ -24,9 +24,9 @@ type PageDao interface {
 	Find(filter string) (utils.Map, error)
 }
 
-// NewPageDao  - Contruct Business Banner Dao
-func NewPageDao(Client utils.Map, business_id string) PageDao {
-	var daoPage PageDao = nil
+// NewPagesDao  - Contruct Business Banner Dao
+func NewPagesDao(Client utils.Map, business_id string) PagesDao {
+	var daoPages PagesDao = nil
 
 	// Get DatabaseType and no need to validate error
 	// since the dbType was assigind with correct after db Sercive created
@@ -34,18 +34,18 @@ func NewPageDao(Client utils.Map, business_id string) PageDao {
 
 	switch dbType {
 	case db_common.DATABASE_TYPE_MONGODB:
-		daoPage = &mongodb_repository.PageMongoDBDao{}
+		daoPages = &mongodb_repository.PagesMongoDBDao{}
 	case db_common.DATABASE_TYPE_ZAPSDB:
 	// *Not Implemented yet*
 	case db_common.DATABASE_TYPE_MYSQLDB:
 		// *Not Implemented yet*
 	}
 
-	if daoPage != nil {
+	if daoPages != nil {
 		// Initialize the Dao
-		daoPage.InitializeDao(Client, business_id)
+		daoPages.InitializeDao(Client, business_id)
 	}
 
-	return daoPage
+	return daoPages
 
 }

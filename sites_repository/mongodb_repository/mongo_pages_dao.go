@@ -12,8 +12,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// PageMongoDBDao - Page Repository
-type PageMongoDBDao struct {
+// PagesMongoDBDao - Page Repository
+type PagesMongoDBDao struct {
 	Client     utils.Map
 	businessId string
 }
@@ -22,14 +22,14 @@ func init() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags | log.Lmicroseconds)
 }
 
-func (p *PageMongoDBDao) InitializeDao(Client utils.Map, businessId string) {
+func (p *PagesMongoDBDao) InitializeDao(Client utils.Map, businessId string) {
 	log.Println("Initialaze Page Mongodb DAO")
 	p.Client = Client
 	p.businessId = businessId
 }
 
 // Creat  - Creat Collection
-func (t *PageMongoDBDao) Create(indata utils.Map) (utils.Map, error) {
+func (t *PagesMongoDBDao) Create(indata utils.Map) (utils.Map, error) {
 
 	log.Println("Page Save - Begin ", indata)
 	// sites page
@@ -54,12 +54,12 @@ func (t *PageMongoDBDao) Create(indata utils.Map) (utils.Map, error) {
 }
 
 // Get - Get By code
-func (t *PageMongoDBDao) Get(pageId string) (utils.Map, error) {
+func (t *PagesMongoDBDao) Get(pageId string) (utils.Map, error) {
 
 	// Get a Single Document
 	var result utils.Map
 
-	log.Println("PageMongoDBDao::Get:: Begin ", pageId)
+	log.Println("PagesMongoDBDao::Get:: Begin ", pageId)
 
 	collection, ctx, err := mongo_utils.GetMongoDbCollection(t.Client, sites_common.Dbpages)
 	log.Println("Get :: Got collection")
@@ -91,7 +91,7 @@ func (t *PageMongoDBDao) Get(pageId string) (utils.Map, error) {
 }
 
 // List - List all Collections
-func (t *PageMongoDBDao) List(filter string, sort string, skip int64, limit int64) (utils.Map, error) {
+func (t *PagesMongoDBDao) List(filter string, sort string, skip int64, limit int64) (utils.Map, error) {
 	var result []utils.Map
 
 	log.Println("Begin  - Find All Collection Dao ", sites_common.Dbpages)
@@ -187,7 +187,7 @@ func (t *PageMongoDBDao) List(filter string, sort string, skip int64, limit int6
 }
 
 // Update - Update Collection
-func (t *PageMongoDBDao) Update(pageId string, indata utils.Map) (utils.Map, error) {
+func (t *PagesMongoDBDao) Update(pageId string, indata utils.Map) (utils.Map, error) {
 
 	log.Println("Update - Begin")
 
@@ -212,9 +212,9 @@ func (t *PageMongoDBDao) Update(pageId string, indata utils.Map) (utils.Map, err
 }
 
 // Delete - Delete Collection
-func (t *PageMongoDBDao) Delete(pageId string) (int64, error) {
+func (t *PagesMongoDBDao) Delete(pageId string) (int64, error) {
 
-	log.Println("PageMongoDBDao::Delete - Begin ", pageId)
+	log.Println("PagesMongoDBDao::Delete - Begin ", pageId)
 
 	// Sites page
 	collection, ctx, err := mongo_utils.GetMongoDbCollection(t.Client, sites_common.Dbpages)
@@ -233,12 +233,12 @@ func (t *PageMongoDBDao) Delete(pageId string) (int64, error) {
 		log.Println("Error in delete ", err)
 		return 0, err
 	}
-	log.Printf("PageMongoDBDao::Delete - End deleted %v documents\n", respage.DeletedCount)
+	log.Printf("PagesMongoDBDao::Delete - End deleted %v documents\n", respage.DeletedCount)
 	return respage.DeletedCount, nil
 }
 
 // Find - Find by Filter
-func (p *PageMongoDBDao) Find(filter string) (utils.Map, error) {
+func (p *PagesMongoDBDao) Find(filter string) (utils.Map, error) {
 	// Find a single document
 	var result utils.Map
 

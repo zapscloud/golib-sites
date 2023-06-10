@@ -13,7 +13,7 @@ import (
 	"github.com/zapscloud/golib-utils/utils"
 )
 
-type PageService interface {
+type PagesService interface {
 	// Create -Create Service
 	Create(indata utils.Map) (utils.Map, error)
 	// Get -Find By Code
@@ -30,19 +30,19 @@ type PageService interface {
 	EndService()
 }
 
-type PageBaseService struct {
+type pagesBaseService struct {
 	db_utils.DatabaseService
-	daopage     sites_repository.PageDao
+	daopage     sites_repository.PagesDao
 	daoBusiness platform_repository.BusinessDao
-	child       PageService
+	child       PagesService
 	businessId  string
 }
 
 // NewBannerService - Construct Banner
-func NewPageService(props utils.Map) (PageService, error) {
+func NewPagesService(props utils.Map) (PagesService, error) {
 	funcode := sites_common.GetServiceModuleCode() + "M" + "01"
 
-	p := PageBaseService{}
+	p := pagesBaseService{}
 	err := p.OpenDatabaseService(props)
 	if err != nil {
 		log.Fatal(err)
@@ -70,20 +70,20 @@ func NewPageService(props utils.Map) (PageService, error) {
 }
 
 // EndLoyaltyCardService - Close all the service
-func (p *PageBaseService) EndService() {
+func (p *pagesBaseService) EndService() {
 	log.Printf("Endservice")
 	p.CloseDatabaseService()
 }
-func (p *PageBaseService) initializeService() {
-	log.Println("PageService::GetBusinessDao ")
-	p.daopage = sites_repository.NewPageDao(p.GetClient(), p.businessId)
+func (p *pagesBaseService) initializeService() {
+	log.Println("PagesService::GetBusinessDao ")
+	p.daopage = sites_repository.NewPagesDao(p.GetClient(), p.businessId)
 	p.daoBusiness = platform_repository.NewBusinessDao(p.GetClient())
 }
 
 // Create -Create Service
-func (p *PageBaseService) Create(indata utils.Map) (utils.Map, error) {
+func (p *pagesBaseService) Create(indata utils.Map) (utils.Map, error) {
 
-	log.Println("PageService::Create - Begin")
+	log.Println("PagesService::Create - Begin")
 	var pageId string
 
 	dataval, dataok := indata[sites_common.FLD_PAGE_ID]
@@ -101,50 +101,50 @@ func (p *PageBaseService) Create(indata utils.Map) (utils.Map, error) {
 	if err != nil {
 		return utils.Map{}, err
 	}
-	log.Println("PageService::Creat - End")
+	log.Println("PagesService::Creat - End")
 	return data, nil
 }
 
 // Get - Find By Code
-func (p *PageBaseService) Get(pageId string) (utils.Map, error) {
-	log.Printf("PageBaseService::Get Begin %v", pageId)
+func (p *pagesBaseService) Get(pageId string) (utils.Map, error) {
+	log.Printf("pagesBaseService::Get Begin %v", pageId)
 
 	data, err := p.daopage.Get(pageId)
 
-	log.Println("PageBaseService::Get::End", data, err)
+	log.Println("pagesBaseService::Get::End", data, err)
 	return data, err
 }
 
 // list -List All records
-func (p *PageBaseService) List(filter string, sort string, skip int64, limit int64) (utils.Map, error) {
+func (p *pagesBaseService) List(filter string, sort string, skip int64, limit int64) (utils.Map, error) {
 
-	log.Println("PageBaseService::FindAll - Begin")
+	log.Println("pagesBaseService::FindAll - Begin")
 
 	listdata, err := p.daopage.List(filter, sort, skip, limit)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Println("PageBaseService::FindAll  -End")
+	log.Println("pagesBaseService::FindAll  -End")
 	return listdata, nil
 
 }
 
 // Update - Update Service
-func (p *PageBaseService) Update(pageId string, indata utils.Map) (utils.Map, error) {
+func (p *pagesBaseService) Update(pageId string, indata utils.Map) (utils.Map, error) {
 
-	log.Println("PageService::Update -Begin")
+	log.Println("PagesService::Update -Begin")
 
 	data, err := p.daopage.Update(pageId, indata)
 
-	log.Println("PageService::Update - End ")
+	log.Println("PagesService::Update - End ")
 	return data, err
 }
 
 // Delete - Delete Service
-func (p *PageBaseService) Delete(pageId string, delete_permanent bool) error {
+func (p *pagesBaseService) Delete(pageId string, delete_permanent bool) error {
 
-	log.Println("pageService ::Delete - Begin", pageId)
+	log.Println("pagesBaseService ::Delete - Begin", pageId)
 
 	if delete_permanent {
 		result, err := p.daopage.Delete(pageId)
@@ -160,15 +160,15 @@ func (p *PageBaseService) Delete(pageId string, delete_permanent bool) error {
 		}
 		log.Println("Update for Delete Flag", data)
 	}
-	log.Printf("PageService :: Delete - End")
+	log.Printf("PagesService :: Delete - End")
 	return nil
 }
 
-func (p *PageBaseService) Find(filter string) (utils.Map, error) {
+func (p *pagesBaseService) Find(filter string) (utils.Map, error) {
 
-	fmt.Println("PageService ::FindByCode - Begin ", filter)
+	fmt.Println("PagesService ::FindByCode - Begin ", filter)
 
 	data, err := p.daopage.Find(filter)
-	log.Println("PageService::FindByCode - End ", data, err)
+	log.Println("PagesService::FindByCode - End ", data, err)
 	return data, err
 }
