@@ -10,10 +10,10 @@ const (
 	// Database   Prefix
 	DbPrefix = db_common.DB_COLLECTION_PREFIX
 	// Collection Names
-	Dbevents        = DbPrefix + "sites_event"
-	Dbenquirys      = DbPrefix + "sites_enquiry"
-	Dbpages         = DbPrefix + "sites_page"
-	Dbmedia_gallery = DbPrefix + "sites_media_gallery"
+	Dbevents        = DbPrefix + "sites_events"
+	Dbenquirys      = DbPrefix + "sites_enquiries"
+	Dbpages         = DbPrefix + "sites_pages"
+	Dbmedia_gallery = DbPrefix + "sites_media_galleries"
 )
 
 // Sites Module table fields
