@@ -1,4 +1,4 @@
-package sites_service
+package sites_services
 
 import (
 	"fmt"

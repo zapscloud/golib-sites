@@ -1,4 +1,4 @@
-package sites_service
+package sites_services
 
 import (
 	"fmt"
@@ -164,7 +164,7 @@ func (p *enquiryBaseService) Delete(enquiryId string, delete_permanent bool) err
 	return nil
 }
 
-// Find  - Find Service  
+// Find  - Find Service
 func (p *enquiryBaseService) Find(filter string) (utils.Map, error) {
 
 	fmt.Println("EnquiryService  Find By Code - Begin ", filter)
