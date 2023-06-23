@@ -49,7 +49,7 @@ func NewMediaGalleryService(props utils.Map) (MediaGalleryService, error) {
 	}
 	log.Printf("MediaGalleryService ")
 	// Verify whether the business id data passed
-	businessid, err := utils.IsMemberExist(props, sites_common.FLD_BUSINESS_ID)
+	businessid, err := utils.GetMemberDataStr(props, sites_common.FLD_BUSINESS_ID)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func NewMediaGalleryService(props utils.Map) (MediaGalleryService, error) {
 
 	_, err = p.daoBusiness.Get(businessid)
 	if err != nil {
-		err := &utils.AppError{ErrorCode: funcode + "01", ErrorMsg: "Invalid business_id", ErrorDetail: "Given app_business_id is not exist"}
+		err := &utils.AppError{ErrorCode: funcode + "01", ErrorMsg: "Invalid business_id", ErrorDetail: "Given business_id is not exist"}
 		return nil, err
 	}
 
