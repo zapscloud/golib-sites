@@ -51,7 +51,7 @@ func NewPagesService(props utils.Map) (PagesService, error) {
 	// Verify whether the business id data passed
 	businessid, err := utils.GetMemberDataStr(props, sites_common.FLD_BUSINESS_ID)
 	if err != nil {
-		return nil, err
+		return p.errorReturn(err)
 	}
 
 	// Assign the BusinessId
@@ -61,7 +61,7 @@ func NewPagesService(props utils.Map) (PagesService, error) {
 	_, err = p.daoBusiness.Get(businessid)
 	if err != nil {
 		err := &utils.AppError{ErrorCode: funcode + "01", ErrorMsg: "Invalid business_id", ErrorDetail: "Given business_id is not exist"}
-		return nil, err
+		return p.errorReturn(err)
 	}
 
 	p.child = &p
@@ -171,4 +171,10 @@ func (p *pagesBaseService) Find(filter string) (utils.Map, error) {
 	data, err := p.daopage.Find(filter)
 	log.Println("PagesService::FindByCode - End ", data, err)
 	return data, err
+}
+
+func (p *pagesBaseService) errorReturn(err error) (PagesService, error) {
+	// Close the Database Connection
+	p.CloseDatabaseService()
+	return nil, err
 }

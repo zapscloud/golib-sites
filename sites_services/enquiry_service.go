@@ -51,7 +51,7 @@ func NewEnquiryService(props utils.Map) (EnquiryService, error) {
 	// Verify whether the business id data passed
 	businessid, err := utils.GetMemberDataStr(props, sites_common.FLD_BUSINESS_ID)
 	if err != nil {
-		return nil, err
+		return p.errorReturn(err)
 	}
 
 	// Assign the BusinessId
@@ -61,7 +61,7 @@ func NewEnquiryService(props utils.Map) (EnquiryService, error) {
 	_, err = p.daoBusiness.Get(businessid)
 	if err != nil {
 		err := &utils.AppError{ErrorCode: funcode + "01", ErrorMsg: "Invalid business_id", ErrorDetail: "Given business_id is not exist"}
-		return nil, err
+		return p.errorReturn(err)
 	}
 
 	p.child = &p
@@ -172,4 +172,10 @@ func (p *enquiryBaseService) Find(filter string) (utils.Map, error) {
 	data, err := p.daoenquiry.Find(filter)
 	log.Println("EnquiryService  Find By Code -  End ", data, err)
 	return data, err
+}
+
+func (p *enquiryBaseService) errorReturn(err error) (EnquiryService, error) {
+	// Close the Database Connection
+	p.CloseDatabaseService()
+	return nil, err
 }

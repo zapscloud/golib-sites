@@ -30,7 +30,7 @@ type MediaGalleryService interface {
 	EndService()
 }
 
-type MediaGalleryBaseService struct {
+type mediaGalleryBaseService struct {
 	db_utils.DatabaseService
 	daomediagallery sites_repository.MediaGalleryDao
 	daoBusiness     platform_repository.BusinessDao
@@ -42,7 +42,7 @@ type MediaGalleryBaseService struct {
 func NewMediaGalleryService(props utils.Map) (MediaGalleryService, error) {
 	funcode := sites_common.GetServiceModuleCode() + "M" + "01"
 
-	p := MediaGalleryBaseService{}
+	p := mediaGalleryBaseService{}
 	err := p.OpenDatabaseService(props)
 	if err != nil {
 		log.Fatal(err)
@@ -51,7 +51,7 @@ func NewMediaGalleryService(props utils.Map) (MediaGalleryService, error) {
 	// Verify whether the business id data passed
 	businessid, err := utils.GetMemberDataStr(props, sites_common.FLD_BUSINESS_ID)
 	if err != nil {
-		return nil, err
+		return p.errorReturn(err)
 	}
 
 	// Assign the BusinessId
@@ -61,7 +61,7 @@ func NewMediaGalleryService(props utils.Map) (MediaGalleryService, error) {
 	_, err = p.daoBusiness.Get(businessid)
 	if err != nil {
 		err := &utils.AppError{ErrorCode: funcode + "01", ErrorMsg: "Invalid business_id", ErrorDetail: "Given business_id is not exist"}
-		return nil, err
+		return p.errorReturn(err)
 	}
 
 	p.child = &p
@@ -70,18 +70,18 @@ func NewMediaGalleryService(props utils.Map) (MediaGalleryService, error) {
 }
 
 // EndLoyaltyCardService - Close all the service
-func (p *MediaGalleryBaseService) EndService() {
+func (p *mediaGalleryBaseService) EndService() {
 	log.Printf("Endservice")
 	p.CloseDatabaseService()
 }
-func (p *MediaGalleryBaseService) initializeService() {
+func (p *mediaGalleryBaseService) initializeService() {
 	log.Println("MediaGalleryService::GetBusinessDao ")
 	p.daomediagallery = sites_repository.NewMediaGalleryDao(p.GetClient(), p.businessId)
 	p.daoBusiness = platform_repository.NewBusinessDao(p.GetClient())
 }
 
 // Create -Create Service
-func (p *MediaGalleryBaseService) Create(indata utils.Map) (utils.Map, error) {
+func (p *mediaGalleryBaseService) Create(indata utils.Map) (utils.Map, error) {
 
 	log.Println("EnquiryService::Cerate - Beging")
 	var mediagalleryId string
@@ -106,32 +106,32 @@ func (p *MediaGalleryBaseService) Create(indata utils.Map) (utils.Map, error) {
 }
 
 // Get - Find By Code
-func (p *MediaGalleryBaseService) Get(mediagalleryId string) (utils.Map, error) {
-	log.Printf("MediaGalleryBaseService::Get Begin %v", mediagalleryId)
+func (p *mediaGalleryBaseService) Get(mediagalleryId string) (utils.Map, error) {
+	log.Printf("mediaGalleryBaseService::Get Begin %v", mediagalleryId)
 
 	data, err := p.daomediagallery.Get(mediagalleryId)
 
-	log.Println("MediaGalleryBaseService::Get::End", data, err)
+	log.Println("mediaGalleryBaseService::Get::End", data, err)
 	return data, err
 }
 
 // list -List All records
-func (p *MediaGalleryBaseService) List(filter string, sort string, skip int64, limit int64) (utils.Map, error) {
+func (p *mediaGalleryBaseService) List(filter string, sort string, skip int64, limit int64) (utils.Map, error) {
 
-	log.Println("MediaGalleryBaseService::FindAll - Begin")
+	log.Println("mediaGalleryBaseService::FindAll - Begin")
 
 	listdata, err := p.daomediagallery.List(filter, sort, skip, limit)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Println("MediaGalleryBaseService::FindAll  -End")
+	log.Println("mediaGalleryBaseService::FindAll  -End")
 	return listdata, nil
 
 }
 
 // Update - Update Service
-func (p *MediaGalleryBaseService) Update(mediagalleryId string, indata utils.Map) (utils.Map, error) {
+func (p *mediaGalleryBaseService) Update(mediagalleryId string, indata utils.Map) (utils.Map, error) {
 
 	log.Println("MediaGallery Service::Update - Begin")
 
@@ -142,7 +142,7 @@ func (p *MediaGalleryBaseService) Update(mediagalleryId string, indata utils.Map
 }
 
 // Delete - Delete Service
-func (p *MediaGalleryBaseService) Delete(mediagalleryId string, delete_permanent bool) error {
+func (p *mediaGalleryBaseService) Delete(mediagalleryId string, delete_permanent bool) error {
 
 	log.Println("MediaGallery Service ::Delete - Begin", mediagalleryId)
 
@@ -164,11 +164,17 @@ func (p *MediaGalleryBaseService) Delete(mediagalleryId string, delete_permanent
 	return nil
 }
 
-func (p *MediaGalleryBaseService) Find(filter string) (utils.Map, error) {
+func (p *mediaGalleryBaseService) Find(filter string) (utils.Map, error) {
 
 	fmt.Println("MediaGallery Service::FindByCode - Begin ", filter)
 
 	data, err := p.daomediagallery.Find(filter)
 	log.Println("MediaGallery Service::FindByCode - End ", data, err)
 	return data, err
+}
+
+func (p *mediaGalleryBaseService) errorReturn(err error) (MediaGalleryService, error) {
+	// Close the Database Connection
+	p.CloseDatabaseService()
+	return nil, err
 }
